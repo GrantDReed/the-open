@@ -78,7 +78,7 @@ export default async function handler(req, res) {
   for (const source of SOURCES) {
     try {
       const response = await fetch(source.url, {
-        headers: { "User-Agent": "PGAChampionshipFantasy/1.0" },
+        headers: { "User-Agent": "TheOpenFantasy/1.0" },
       });
       if (!response.ok) {
         errors.push(`${source.name}: HTTP ${response.status}`);
