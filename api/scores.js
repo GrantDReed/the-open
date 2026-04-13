@@ -1,35 +1,5 @@
 const SOURCES = [
   {
-    name: "masters.com",
-    url: "https://www.masters.com/en_US/scores/feeds/2026/scores.json",
-    parse: (data) => {
-      const players = data?.data?.player || [];
-      const parseTopar = (v) => {
-        if (v == null) return null;
-        if (v === "E") return 0;
-        const n = parseInt(v);
-        return isNaN(n) ? null : n;
-      };
-      const roundScore = (r) => {
-        if (!r) return null;
-        const s = r.roundStatus;
-        if (s !== "Playing" && s !== "Finished") return null;
-        return typeof r.fantasy === "number" ? r.fantasy : null;
-      };
-      return players.map((p) => ({
-        name: `${p.first_name} ${p.last_name}`,
-        total: parseTopar(p.topar),
-        thru: p.thru || null,
-        r1: roundScore(p.round1),
-        r2: roundScore(p.round2),
-        r3: roundScore(p.round3),
-        r4: roundScore(p.round4),
-        pos: p.pos || null,
-        status: p.status || null,
-      }));
-    },
-  },
-  {
     name: "espn-leaderboard",
     url: "https://site.web.api.espn.com/apis/site/v2/sports/golf/pga/leaderboard",
     parse: (data) => {
@@ -108,7 +78,7 @@ export default async function handler(req, res) {
   for (const source of SOURCES) {
     try {
       const response = await fetch(source.url, {
-        headers: { "User-Agent": "MastersFantasyDashboard/1.0" },
+        headers: { "User-Agent": "PGAChampionshipFantasy/1.0" },
       });
       if (!response.ok) {
         errors.push(`${source.name}: HTTP ${response.status}`);

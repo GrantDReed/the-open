@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Masters 2026 — Fantasy Challenge</title>
+  <title>PGA Championship 2026 — Fantasy Challenge</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,104 +20,23 @@
 const { useState, useEffect, useCallback, useRef } = React;
 
 const TEAMS = [
-  { id: 0, name: "Adam Rowden", players: [
-    { name: "Xander Schauffele", cost: 4 }, { name: "Matt Fitzpatrick", cost: 3 },
-    { name: "Sungjae Im", cost: 2 }, { name: "Rasmus Højgaard", cost: 1 },
-  ]},
-  { id: 1, name: "Dave Gregory", players: [
-    { name: "Scottie Scheffler", cost: 4 }, { name: "Tommy Fleetwood", cost: 3 },
-    { name: "J.J. Spaun", cost: 2 }, { name: "Wyndham Clark", cost: 1 },
-  ]},
-  { id: 2, name: "Tom Seymour", players: [
-    { name: "Jon Rahm", cost: 4 }, { name: "Chris Gotterup", cost: 2 },
-    { name: "Sepp Straka", cost: 2 }, { name: "Adam Scott", cost: 2 },
-  ]},
-  { id: 3, name: "Ludo Webb", players: [
-    { name: "Matt Fitzpatrick", cost: 3 }, { name: "Tommy Fleetwood", cost: 3 },
-    { name: "Russell Henley", cost: 2 }, { name: "Corey Conners", cost: 2 },
-  ]},
-  { id: 4, name: "Louis Browne", players: [
-    { name: "Ludvig Åberg", cost: 4 }, { name: "Matt Fitzpatrick", cost: 3 },
-    { name: "Sungjae Im", cost: 2 }, { name: "Fred Couples", cost: 1 },
-  ]},
-  { id: 5, name: "Will Emerson", players: [
-    { name: "Bryson DeChambeau", cost: 4 }, { name: "Viktor Hovland", cost: 3 },
-    { name: "Robert MacIntyre", cost: 2 }, { name: "Wyndham Clark", cost: 1 },
-  ]},
-  { id: 6, name: "Darren Teague", players: [
-    { name: "Tommy Fleetwood", cost: 3 }, { name: "Justin Rose", cost: 3 },
-    { name: "Robert MacIntyre", cost: 2 }, { name: "Tyrrell Hatton", cost: 2 },
-  ]},
-  { id: 7, name: "Dan Harris", players: [
-    { name: "Scottie Scheffler", cost: 4 }, { name: "Cameron Young", cost: 3 },
-    { name: "Chris Gotterup", cost: 2 }, { name: "Carlos Ortiz", cost: 1 },
-  ]},
-  { id: 8, name: "Dave Hudson", players: [
-    { name: "Scottie Scheffler", cost: 4 }, { name: "Matt Fitzpatrick", cost: 3 },
-    { name: "Sungjae Im", cost: 2 }, { name: "Dustin Johnson", cost: 1 },
-  ]},
-  { id: 9, name: "Grant Reed", players: [
-    { name: "Scottie Scheffler", cost: 4 }, { name: "Patrick Reed", cost: 3 },
-    { name: "Corey Conners", cost: 2 }, { name: "Keegan Bradley", cost: 1 },
-  ]},
+  { id: 0, name: "Adam Rowden", players: [] },
+  { id: 1, name: "Dave Gregory", players: [] },
+  { id: 2, name: "Tom Seymour", players: [] },
+  { id: 3, name: "Ludo Webb", players: [] },
+  { id: 4, name: "Louis Browne", players: [] },
+  { id: 5, name: "Will Emerson", players: [] },
+  { id: 6, name: "Darren Teague", players: [] },
+  { id: 7, name: "Dan Harris", players: [] },
+  { id: 8, name: "Dave Hudson", players: [] },
+  { id: 9, name: "Grant Reed", players: [] },
 ];
 
-const NPC_TEAMS = [
-  { id: "owgr-4321", strategy: "OWGR", detailLabel: "OWGR", combo: "4·3·2·1", players: [
-    { name: "Scottie Scheffler", cost: 4, detail: "#1" }, { name: "Cameron Young", cost: 3, detail: "#3" },
-    { name: "J.J. Spaun", cost: 2, detail: "#5" }, { name: "Ben Griffin", cost: 1, detail: "#16" },
-  ]},
-  { id: "owgr-3322", strategy: "OWGR", detailLabel: "OWGR", combo: "3·3·2·2", players: [
-    { name: "Cameron Young", cost: 3, detail: "#3" }, { name: "Tommy Fleetwood", cost: 3, detail: "#4" },
-    { name: "J.J. Spaun", cost: 2, detail: "#5" }, { name: "Robert MacIntyre", cost: 2, detail: "#8" },
-  ]},
-  { id: "owgr-4222", strategy: "OWGR", detailLabel: "OWGR", combo: "4·2·2·2", players: [
-    { name: "Scottie Scheffler", cost: 4, detail: "#1" }, { name: "J.J. Spaun", cost: 2, detail: "#5" },
-    { name: "Robert MacIntyre", cost: 2, detail: "#8" }, { name: "Chris Gotterup", cost: 2, detail: "#11" },
-  ]},
-  { id: "m25-4321", strategy: "'25 Masters", detailLabel: "'25", combo: "4·3·2·1", players: [
-    { name: "Rory McIlroy", cost: 4, detail: "T1" }, { name: "Justin Rose", cost: 3, detail: "T1" },
-    { name: "Sungjae Im", cost: 2, detail: "T5" }, { name: "Zach Johnson", cost: 1, detail: "T8" },
-  ]},
-  { id: "m25-3322", strategy: "'25 Masters", detailLabel: "'25", combo: "3·3·2·2", players: [
-    { name: "Justin Rose", cost: 3, detail: "T1" }, { name: "Patrick Reed", cost: 3, detail: "T3" },
-    { name: "Sungjae Im", cost: 2, detail: "T5" }, { name: "Jason Day", cost: 2, detail: "T8" },
-  ]},
-  { id: "m25-4222", strategy: "'25 Masters", detailLabel: "'25", combo: "4·2·2·2", players: [
-    { name: "Rory McIlroy", cost: 4, detail: "T1" }, { name: "Sungjae Im", cost: 2, detail: "T5" },
-    { name: "Corey Conners", cost: 2, detail: "T8" }, { name: "Jason Day", cost: 2, detail: "T8" },
-  ]},
-  { id: "stiff", strategy: "Extra Stiff Shaft", detailLabel: "HOT", combo: "4·3·2·1", players: [
-    { name: "Bryson DeChambeau", cost: 4, detail: "🔥🔥🔥🔥" },
-    { name: "Brooks Koepka", cost: 3, detail: "🔥🔥🔥" },
-    { name: "Jason Day", cost: 2, detail: "🔥🔥" },
-    { name: "Wyndham Clark", cost: 1, detail: "🔥" },
-  ]},
-];
+const NPC_TEAMS = [];
 
-const TRANSFERS = [
-  // Real team swaps
-  { teamId: 0, out: "Xander Schauffele", in: "Rory McIlroy", inCost: 4 },
-  { teamId: 1, out: "J.J. Spaun", in: "Tyrrell Hatton", inCost: 2 },
-  { teamId: 2, out: "Jon Rahm", in: "Rory McIlroy", inCost: 4 },
-  { teamId: 3, out: "Corey Conners", in: "Jason Day", inCost: 2 },
-  { teamId: 4, out: "Fred Couples", in: "Wyndham Clark", inCost: 1 },
-  { teamId: 5, out: "Bryson DeChambeau", in: "Rory McIlroy", inCost: 4 },
-  { teamId: 6, out: "Robert MacIntyre", in: "Jason Day", inCost: 2 },
-  { teamId: 7, out: "Carlos Ortiz", in: "Kristoffer Reitan", inCost: 1 },
-  { teamId: 8, out: "Scottie Scheffler", in: "Rory McIlroy", inCost: 4 },
-  { teamId: 9, out: "Corey Conners", in: "Jason Day", inCost: 2 },
-  // NPC swaps: worst performer → best available at same tier
-  { teamId: "owgr-4321", out: "J.J. Spaun", in: "Tyrrell Hatton", inCost: 2 },
-  { teamId: "owgr-3322", out: "Robert MacIntyre", in: "Tyrrell Hatton", inCost: 2 },
-  { teamId: "owgr-4222", out: "Robert MacIntyre", in: "Tyrrell Hatton", inCost: 2 },
-  { teamId: "m25-4321", out: "Zach Johnson", in: "Wyndham Clark", inCost: 1 },
-  { teamId: "m25-3322", out: "Sungjae Im", in: "Tyrrell Hatton", inCost: 2 },
-  { teamId: "m25-4222", out: "Corey Conners", in: "Tyrrell Hatton", inCost: 2 },
-  { teamId: "stiff", out: "Bryson DeChambeau", in: "Rory McIlroy", inCost: 4 },
-];
+const TRANSFERS = [];
 
-const POLL_MS = 60 * 60 * 1000; // hourly — tournament is over
+const POLL_MS = 3 * 60 * 1000;
 const costBg = { 4: "#b91c1c", 3: "#1d4ed8", 2: "#15803d", 1: "#7e22ce" };
 
 function normalize(n) {
@@ -125,10 +44,10 @@ function normalize(n) {
 }
 
 const PRICE_TIERS = {
-  4: ["Scottie Scheffler","Rory McIlroy","Bryson DeChambeau","Jon Rahm","Xander Schauffele","Ludvig Åberg"],
-  3: ["Matt Fitzpatrick","Cameron Young","Tommy Fleetwood","Collin Morikawa","Justin Rose","Patrick Reed","Hideki Matsuyama","Brooks Koepka","Jordan Spieth","Viktor Hovland","Shane Lowry","Justin Thomas","Patrick Cantlay","Sam Burns","Cameron Smith","Tony Finau"],
-  2: ["Robert MacIntyre","Min Woo Lee","Chris Gotterup","Russell Henley","Sepp Straka","Joaquin Niemann","Akshay Bhatia","Si Woo Kim","Corey Conners","Gary Woodland","Jason Day","Tyrrell Hatton","Adam Scott","Jake Knapp","Jacob Bridgeman","Sungjae Im","Rickie Fowler","Marco Penge","Sahith Theegala","Nicolai Højgaard","Harris English","Will Zalatoris","Daniel Berger","J.J. Spaun","Maverick McNealy","Thomas Detry","Max Homa","Casey Jarvis"],
-  1: ["Stephan Jaeger","Aaron Rai","Joohyung Kim","Ben Griffin","Ryan Fox","Anthony Kim","Dustin Johnson","Rasmus Højgaard","Brian Harman","Wyndham Clark","Sergio Garcia","Billy Horschel","Keegan Bradley","Ryan Gerard","Alex Noren","Tom Hoge","Nico Echavarria","Max Greyserman","Byeong-Hun An","Davis Thompson","Kurt Kitayama","Matt McCarty","Taylor Pendrith","Rasmus Neergaard-Petersen","Lucas Glover","Aldrich Potgieter","Jayden Schaper","Tom McKibbin","Webb Simpson","Adam Hadwin","Nick Dunlap","Tiger Woods","Christiaan Bezuidenhout","Pierceson Coody","Phil Mickelson","Haotong Li","Sam Stevens","Harry Hall","John Keefer","Nick Taylor","Carlos Ortiz","Andrew Novak","Denny McCarthy","Bubba Watson","Michael Kim","Charl Schwartzel","Michael Brennan","Kristoffer Reitan","Sami Välimäki","Zach Johnson","Danny Willett","Davis Riley","Brian Campbell","Pongsapak Laopakdee","Naoyuki Kataoka","Brandon Holtz","Jackson Herrington","Ethan Fang","Mason Howell","Fifa Laopakdee","Fred Couples","Mateo Pulcini","Vijay Singh","Ángel Cabrera","Mike Weir","José María Olazábal"],
+  4: [],
+  3: [],
+  2: [],
+  1: [],
 };
 const PRICES = (() => {
   const m = {};
@@ -168,7 +87,7 @@ function App() {
   const [status, setStatus] = useState("idle");
   const [lastUpdated, setLastUpdated] = useState(null);
   const [msg, setMsg] = useState("");
-  const [autoPoll, setAutoPoll] = useState(false);
+  const [autoPoll, setAutoPoll] = useState(true);
   const [rulesOpen, setRulesOpen] = useState(false);
   const [view, setView] = useState("leaderboard");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 480);
@@ -212,11 +131,9 @@ function App() {
     }
   }, []);
 
-  // Fetch once on mount
-  useEffect(() => { doFetch(); }, []);
-  // Optional polling if user re-enables
   useEffect(() => {
     if (autoPoll) {
+      doFetch();
       intervalRef.current = setInterval(doFetch, POLL_MS);
       return () => clearInterval(intervalRef.current);
     } else {
@@ -244,7 +161,7 @@ function App() {
     return rounds;
   };
 
-  // Cut line: top 50 and ties
+  // Cut line: top 70 and ties
   const allPlayers = Object.values(players);
   // R2 is over when every player has r2 data AND no one is still mid-round in R2
   const r2Done = allPlayers.length > 0 && allPlayers.every(p => p.r2 != null) && allPlayers.every(p => {
@@ -255,7 +172,7 @@ function App() {
   // Cut is a 36-hole cut — always compute from R1+R2 only, never from live total
   const r1r2Score = (p) => (p.r1 != null && p.r2 != null) ? p.r1 + p.r2 : null;
   const playersWithR1R2 = allPlayers.filter(p => r1r2Score(p) != null).sort((a, b) => r1r2Score(a) - r1r2Score(b));
-  const projectedCutScore = playersWithR1R2.length >= 50 ? r1r2Score(playersWithR1R2[49]) : null;
+  const projectedCutScore = playersWithR1R2.length >= 70 ? r1r2Score(playersWithR1R2[69]) : null;
   const actualCutScore = r2Done ? projectedCutScore : null;
   // MC penalty only applies after R2 is complete
   const isMC = (name) => {
@@ -375,12 +292,12 @@ function App() {
 
   return (
     <div>
-      <header style={{background:"linear-gradient(135deg,#0a3d1f 0%,#0d5a2c 40%,#0a3d1f 100%)",color:"#fff",textAlign:"center",paddingTop:32}}>
+      <header style={{background:"linear-gradient(135deg,#002d72 0%,#003d99 40%,#002d72 100%)",color:"#fff",textAlign:"center",paddingTop:32}}>
         <div style={{paddingBottom:22}}>
           <div style={{fontSize:13,letterSpacing:8,opacity:.6,fontFamily:"'Playfair Display',serif"}}>2026</div>
-          <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(26px,5vw,42px)",fontWeight:900,letterSpacing:3,margin:"2px 0",lineHeight:1.1,textShadow:"0 2px 10px rgba(0,0,0,.3)"}}>THE MASTERS</h1>
+          <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(22px,4.5vw,38px)",fontWeight:900,letterSpacing:3,margin:"2px 0",lineHeight:1.1,textShadow:"0 2px 10px rgba(0,0,0,.3)"}}>PGA CHAMPIONSHIP</h1>
           <div style={{fontSize:12,letterSpacing:6,fontWeight:600,opacity:.85,background:"rgba(255,255,255,.12)",display:"inline-block",padding:"3px 14px",borderRadius:2,marginTop:4}}>FANTASY CHALLENGE</div>
-          <div style={{marginTop:10,fontSize:10,letterSpacing:3,opacity:.5}}>AUGUSTA NATIONAL &nbsp;◆&nbsp; APRIL 9–12 &nbsp;◆&nbsp; 10 TEAMS &nbsp;◆&nbsp; £10M BUDGET</div>
+          <div style={{marginTop:10,fontSize:10,letterSpacing:3,opacity:.5}}>ARONIMINK GOLF CLUB &nbsp;◆&nbsp; MAY 14–17 &nbsp;◆&nbsp; 10 TEAMS &nbsp;◆&nbsp; £10M BUDGET</div>
         </div>
         <div style={{height:4,background:"linear-gradient(90deg,#c9a84c,#f0d68a,#c9a84c,#f0d68a,#c9a84c)"}}/>
       </header>
@@ -395,13 +312,13 @@ function App() {
           {msg && <span style={{fontSize:11,color:status==="error"?"#c0392b":"#888"}}>{msg}</span>}
         </div>
         <div style={{display:"flex",gap:6}}>
-          <button onClick={()=>setAutoPoll(!autoPoll)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:600,padding:"6px 12px",border:"1px solid #ccc",borderRadius:6,cursor:"pointer",background:autoPoll?"#0a3d1f":"#fff",color:autoPoll?"#fff":"#555"}}>{autoPoll?"⏸ Pause":"▶ Live"}</button>
-          <button onClick={doFetch} disabled={status==="fetching"} style={{fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:600,padding:"6px 12px",border:"2px solid #0a3d1f",borderRadius:6,cursor:"pointer",background:"#fff",color:"#0a3d1f",opacity:status==="fetching"?.5:1}}>⛳ Refresh</button>
+          <button onClick={()=>setAutoPoll(!autoPoll)} style={{fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:600,padding:"6px 12px",border:"1px solid #ccc",borderRadius:6,cursor:"pointer",background:autoPoll?"#002d72":"#fff",color:autoPoll?"#fff":"#555"}}>{autoPoll?"⏸ Pause":"▶ Live"}</button>
+          <button onClick={doFetch} disabled={status==="fetching"} style={{fontFamily:"'DM Sans',sans-serif",fontSize:12,fontWeight:600,padding:"6px 12px",border:"2px solid #002d72",borderRadius:6,cursor:"pointer",background:"#fff",color:"#002d72",opacity:status==="fetching"?.5:1}}>🏌️ Refresh</button>
         </div>
       </div>
 
       <div style={{maxWidth:860,margin:"0 auto",padding:"0 16px 16px"}}>
-        <button onClick={()=>setRulesOpen(!rulesOpen)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:rulesOpen?"#0a3d1f":"#fff",color:rulesOpen?"#c9a84c":"#0a3d1f",border:"1px solid #0a3d1f",borderRadius:6,cursor:"pointer",fontFamily:"'Playfair Display',serif",fontSize:14,fontWeight:700,letterSpacing:2}}>
+        <button onClick={()=>setRulesOpen(!rulesOpen)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"10px 14px",background:rulesOpen?"#002d72":"#fff",color:rulesOpen?"#c9a84c":"#002d72",border:"1px solid #002d72",borderRadius:6,cursor:"pointer",fontFamily:"'Playfair Display',serif",fontSize:14,fontWeight:700,letterSpacing:2}}>
           <span>RULES</span>
           <span style={{fontSize:12}}>{rulesOpen?"▲":"▼"}</span>
         </button>
@@ -424,7 +341,7 @@ function App() {
         {[["leaderboard","Leaderboard"],["players","Players"],["npc","NPC Teams"]].map(([k,label])=>{
           const active=view===k;
           return (
-            <button key={k} onClick={()=>setView(k)} style={{flex:1,padding:"10px 14px",background:"transparent",border:"none",borderBottom:active?"3px solid #c9a84c":"3px solid transparent",marginBottom:-2,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:14,fontWeight:active?800:600,letterSpacing:2,color:active?"#0a3d1f":"#999"}}>
+            <button key={k} onClick={()=>setView(k)} style={{flex:1,padding:"10px 14px",background:"transparent",border:"none",borderBottom:active?"3px solid #c9a84c":"3px solid transparent",marginBottom:-2,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:14,fontWeight:active?800:600,letterSpacing:2,color:active?"#002d72":"#999"}}>
               {label.toUpperCase()}
             </button>
           );
@@ -441,19 +358,18 @@ function App() {
                 <div style={{display:"grid",gridTemplateColumns:"44px 1fr auto",alignItems:"center",padding:"14px 16px",gap:12,background:isLeader?"linear-gradient(90deg,#fdf8e8,#fff9e0)":"transparent"}}>
                   <div style={{width:38,height:38,borderRadius:"50%",background:isLeader?"transparent":"#f0ece2",color:"#555",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:isLeader||isLast?22:16}}>{isLeader?"🍆":isLast?"💩":pos}</div>
                   <div>
-                    <div style={{fontSize:16,fontWeight:700,color:"#0a3d1f"}}>{team.name}</div>
+                    <div style={{fontSize:16,fontWeight:700,color:"#002d72"}}>{team.name}</div>
                     <div style={{display:"flex",flexDirection:isMobile?"column":"row",gap:isMobile?4:6,flexWrap:"wrap",marginTop:4}}>
                       {team.players.map((p,i)=>{
                         const thru=gThru(p.name);
-                        const wheelchair=team.id===4&&p.name==="Fred Couples";
+
                         const isOut=p.role==="swapped-out", isIn=p.role==="swapped-in", isMc=p.role==="mc";
                         const contrib=playerContribution(p.name, p.role||"original");
                         return(
                           <span key={i} style={{fontSize:11,background:isOut?"#ddd":"#f0ece2",padding:"2px 8px",borderRadius:12,display:"inline-flex",alignItems:"center",gap:4,alignSelf:"flex-start",opacity:isOut?.55:1}}>
                             <span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:16,height:16,borderRadius:"50%",background:costBg[p.cost],color:"#fff",fontSize:9,fontWeight:700}}>{p.cost}</span>
                             <span style={{textDecoration:isOut?"line-through":"none"}}>{p.name}</span>
-                            {wheelchair&&<span style={{fontSize:"1.4em",marginLeft:3,verticalAlign:"middle"}}>🪦 RIP</span>}
-                            {isIn&&<span style={{fontSize:9,fontWeight:700,color:"#15803d",marginLeft:2}}>↑IN</span>}
+                                                        {isIn&&<span style={{fontSize:9,fontWeight:700,color:"#15803d",marginLeft:2}}>↑IN</span>}
                             {isMc&&<span style={{fontSize:9,fontWeight:700,color:"#dc2626",marginLeft:2}}>MC</span>}
                             <span style={{fontWeight:700,color:sc(contrib),fontSize:10}}>{fmt(contrib)}</span>
                             {!isOut&&thru&&<span style={{fontSize:9,color:"#999"}}>({thru==="18"||thru==="F"?"F":thru})</span>}
@@ -533,7 +449,7 @@ function App() {
                 <div style={{padding:"10px 14px",display:"grid",gridTemplateColumns:"28px 1fr auto",gap:10,alignItems:"center"}}>
                   <span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:24,height:24,borderRadius:"50%",background:p.tier?costBg[p.tier]:"#ccc",color:"#fff",fontSize:11,fontWeight:700}}>{p.tier??"?"}</span>
                   <div style={{minWidth:0}}>
-                    <div style={{fontSize:14,fontWeight:600,color:(p.cut&&r2Done)?"#999":"#0a3d1f"}}>{p.name}{p.cut&&r2Done&&<span style={{fontSize:10,fontWeight:700,color:"#dc2626",marginLeft:6}}>MC</span>}</div>
+                    <div style={{fontSize:14,fontWeight:600,color:(p.cut&&r2Done)?"#999":"#002d72"}}>{p.name}{p.cut&&r2Done&&<span style={{fontSize:10,fontWeight:700,color:"#dc2626",marginLeft:6}}>MC</span>}</div>
                     {p.owners.length>0 && (
                       <div style={{fontSize:11,color:"#888",marginTop:2}}>owned by {p.owners.map(o=>o.split(" ").pop()).join(" · ")}</div>
                     )}
@@ -572,7 +488,7 @@ function App() {
       {view==="npc" && (
       <section style={{maxWidth:860,margin:"0 auto",padding:"16px 16px 24px"}}>
         <div style={{fontSize:12,color:"#777",marginBottom:10,lineHeight:1.5}}>
-          2 strategies × 3 tier combos, plus one vibes pick. <strong>OWGR</strong>: highest-ranked player from each required tier. <strong>'25 Masters</strong>: best 2025 Masters finisher from each required tier. <strong>Extra Stiff Shaft</strong>: Hotties, peer-reviewed by Grant's wife. All picks are in the 2026 field.
+          NPC benchmark teams — coming soon.
         </div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {rankedNpc.map((team,idx)=>{
@@ -582,7 +498,7 @@ function App() {
                 <div style={{display:"grid",gridTemplateColumns:"44px 1fr auto",alignItems:"center",padding:"14px 16px",gap:12}}>
                   <div style={{width:38,height:38,borderRadius:"50%",background:"#f0ece2",color:"#555",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,fontSize:16}}>{idx+1}</div>
                   <div>
-                    <div style={{fontSize:15,fontWeight:700,color:"#0a3d1f"}}>
+                    <div style={{fontSize:15,fontWeight:700,color:"#002d72"}}>
                       {team.strategy} <span style={{fontSize:11,color:"#8b7355",fontWeight:600,letterSpacing:1,marginLeft:4}}>· {team.combo}</span>
                     </div>
                     <div style={{display:"flex",flexDirection:isMobile?"column":"row",gap:isMobile?4:6,flexWrap:"wrap",marginTop:4}}>
