@@ -1030,7 +1030,7 @@ function App() {
           <div style={{background:"#fff",borderRadius:12,maxWidth:480,width:"100%",maxHeight:"90vh",overflow:"auto",boxShadow:"0 10px 40px rgba(0,0,0,.3)"}} onClick={e=>e.stopPropagation()}>
             <div style={{padding:"20px 24px",borderBottom:"1px solid #eee",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:20,fontWeight:700,color:"#1a1a2e",margin:0}}>
-                {pickStep==="pin"?(claimMode?"Claim Your Team":"Enter PIN"):(!editingStatus(r2Done).allowed?`${TEAMS.find(t=>t.id===pickTeamId)?.name}`:`${TEAMS.find(t=>t.id===pickTeamId)?.name} — ${editingStatus(r2Done).mode==="swap"?"Transfer":(pickPlayers.length>0?"Edit Roster":"Build Roster")}`)}
+                {pickStep==="pin"?(claimMode?"Set Your PIN":"Enter PIN"):(!editingStatus(r2Done).allowed?`${TEAMS.find(t=>t.id===pickTeamId)?.name}`:`${TEAMS.find(t=>t.id===pickTeamId)?.name} — ${editingStatus(r2Done).mode==="swap"?"Transfer":(pickPlayers.length>0?"Edit Roster":"Build Roster")}`)}
               </h2>
               <button onClick={()=>setPickOpen(false)} style={{background:"none",border:"none",fontSize:22,cursor:"pointer",color:"#999",lineHeight:1}}>×</button>
             </div>
@@ -1053,10 +1053,11 @@ function App() {
                     <button onClick={submitPin} disabled={pickPin.length<4}
                       style={{width:"100%",padding:"12px",background:pickPin.length>=4?"#1a1a2e":"#ccc",color:"#fff",border:"none",borderRadius:6,cursor:pickPin.length>=4?"pointer":"default",fontSize:14,fontWeight:600,fontFamily:"'DM Sans',sans-serif"}}>Continue</button>
                   </div>
-                  <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid #eee",textAlign:"center"}}>
+                  <div style={{marginTop:20,paddingTop:18,borderTop:"1px solid #eee"}}>
+                    <div style={{fontSize:12.5,color:"#777",marginBottom:10,textAlign:"center"}}>Haven't set your PIN yet?</div>
                     <button onClick={()=>{setClaimMode(true);setPickError("");}}
-                      style={{background:"none",border:"none",cursor:"pointer",fontSize:12.5,color:"#1a1a2e",fontWeight:600,fontFamily:"'DM Sans',sans-serif",textDecoration:"underline"}}>
-                      First time? Set up your team with a claim code
+                      style={{width:"100%",padding:"12px",background:"#c9a84c",color:"#1a1a2e",border:"none",borderRadius:6,cursor:"pointer",fontSize:14,fontWeight:700,fontFamily:"'DM Sans',sans-serif"}}>
+                      🔑 First time — set your PIN
                     </button>
                   </div>
                 </div>
@@ -1066,7 +1067,7 @@ function App() {
               {pickStep==="pin" && claimMode && (
                 <div>
                   <div style={{fontSize:12,color:"#555",marginBottom:16,lineHeight:1.5}}>
-                    Enter the <strong>one-time claim code</strong> you were given, then choose your own PIN or passphrase (at least 4 characters — digits, letters or symbols, no spaces). The code works once — after this you'll log in with what you chose. <em>Nobody else (not even the organiser) can see it.</em>
+                    Enter the <strong>one-time claim code</strong> you were given, then choose your own PIN or passphrase (at least 4 characters — digits, letters or symbols, no spaces). The code works once — after this you'll log in with the PIN you chose. <em>Nobody else (not even the organiser) can see it.</em>
                   </div>
                   <label style={{fontSize:11,fontWeight:700,letterSpacing:1,color:"#888"}}>CLAIM CODE</label>
                   <input type="text" autoCapitalize="characters" placeholder="claim code" value={claimCode}
@@ -1088,7 +1089,7 @@ function App() {
                   {pickError && <div style={{color:"#dc2626",fontSize:12,marginTop:10}}>{pickError}</div>}
                   <div style={{marginTop:16}}>
                     <button onClick={submitClaim} disabled={!claimCode.trim()||claimPin.length<4||claimPin2.length<4}
-                      style={{width:"100%",padding:"12px",background:(claimCode.trim()&&claimPin.length>=4&&claimPin2.length>=4)?"#1a1a2e":"#ccc",color:"#fff",border:"none",borderRadius:6,cursor:"pointer",fontSize:14,fontWeight:600,fontFamily:"'DM Sans',sans-serif"}}>Claim team &amp; set PIN</button>
+                      style={{width:"100%",padding:"12px",background:(claimCode.trim()&&claimPin.length>=4&&claimPin2.length>=4)?"#1a1a2e":"#ccc",color:"#fff",border:"none",borderRadius:6,cursor:"pointer",fontSize:14,fontWeight:600,fontFamily:"'DM Sans',sans-serif"}}>Set my PIN</button>
                   </div>
                   <div style={{marginTop:16,paddingTop:14,borderTop:"1px solid #eee",textAlign:"center"}}>
                     <button onClick={()=>{setClaimMode(false);setPickError("");}}
