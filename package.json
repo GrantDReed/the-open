@@ -1,5 +1,8 @@
 {
-  "name": "masters-fantasy-2026",
+  "name": "the-open-fantasy-2026",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@upstash/redis": "^1.38.0"
+  }
 }
