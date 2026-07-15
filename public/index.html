@@ -309,7 +309,6 @@ function App() {
   const [msg, setMsg] = useState("");
   const [autoPoll, setAutoPoll] = useState(true);
   const [rulesOpen, setRulesOpen] = useState(false);
-  const [tierMethodOpen, setTierMethodOpen] = useState(false);
   const [view, setView] = useState("leaderboard");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 480);
   // Team picker state
@@ -789,38 +788,6 @@ function App() {
               <li style={{marginBottom:10}}><strong>Missed cut penalty:</strong> If after the free transfer a team still has any player(s) who missed the cut, those players are assigned the <em>worst score of the round</em> (i.e. the highest round score shot by any player still playing) for Rounds 3 and 4.</li>
               <li><strong>Tiebreaker:</strong> If two or more teams finish level on total score, the team whose <em>single best player</em> shot the lower score wins. If those are still level, compare the next-best player, and so on.</li>
             </ol>
-
-            <div style={{marginTop:16,borderTop:"1px solid #e8e4da",paddingTop:14}}>
-              <button onClick={()=>setTierMethodOpen(!tierMethodOpen)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 12px",background:tierMethodOpen?"#eef1f7":"#fff",color:"#1a1a2e",border:"1px solid #cdd9ec",borderRadius:6,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:13,fontWeight:700,letterSpacing:1}}>
-                <span>HOW PLAYERS WERE PLACED IN TIERS</span>
-                <span style={{fontSize:11}}>{tierMethodOpen?"▲":"▼"}</span>
-              </button>
-              {tierMethodOpen && (
-                <div style={{marginTop:10,fontSize:12.5,lineHeight:1.65,color:"#444"}}>
-                  <p style={{margin:"0 0 12px"}}>Tiers anchor on <strong>consensus betting odds</strong> (DraftKings, FanDuel, BetMGM), with form, course fit and overrides applied on top. Odds already blend the market's view of recent form, ceiling, course fit and injury news — but they get less informative down the board:</p>
-                  <ul style={{margin:"0 0 12px",paddingLeft:18}}>
-                    <li style={{marginBottom:5}}><strong>£4M &amp; £3M:</strong> odds-first. The gaps between the shortest prices are meaningful.</li>
-                    <li style={{marginBottom:5}}><strong>£2M:</strong> blended ~60% odds / 40% recent form, since odds start to compress.</li>
-                    <li><strong>£1M:</strong> odds bunch together at long prices, so ranking falls back to OWGR and below (OWGR → DataGolf → home-tour results → status floor); the lowest ranks are low-confidence by design.</li>
-                  </ul>
-                  <p style={{margin:"0 0 6px"}}><strong>Form evaluation (used to spot divergences from odds):</strong></p>
-                  <ul style={{margin:"0 0 12px",paddingLeft:18}}>
-                    <li style={{marginBottom:5}}><strong>Heaviest:</strong> last 4–6 starts, anchored by the most recent major.</li>
-                    <li style={{marginBottom:5}}><strong>Medium:</strong> last 12 months as a form baseline.</li>
-                    <li style={{marginBottom:5}}><strong>Light:</strong> prior year as a sanity check on true skill.</li>
-                    <li><strong>Cut-probability proxy:</strong> cut rate over the last 10–12 starts — the single best predictor of making the weekend.</li>
-                  </ul>
-                  <p style={{margin:"0 0 6px"}}><strong>Override rules — form beats odds only with a clear reason:</strong></p>
-                  <ul style={{margin:"0 0 12px",paddingLeft:18}}>
-                    <li style={{marginBottom:5}}><strong>Injury (demote):</strong> a clear, current, structural injury with a recent WD drops a player one tier — verified against a primary source, within a 30-day window, distinguishing injury from illness and current from historical.</li>
-                    <li style={{marginBottom:5}}><strong>Hot form (promote):</strong> results not yet priced into odds move a player up, weighed by field strength (major win = strong, full-field win = moderate).</li>
-                    <li><strong>Default:</strong> defer to odds when there's no clear injury or form-divergence reason.</li>
-                  </ul>
-                  <p style={{margin:"0 0 6px"}}><strong>Course fit (tiebreaker only).</strong> Links golf at The Open rewards control of trajectory and the ability to flight the ball in wind. Course fit is used only to break ties between similarly-ranked players, never as a primary driver.</p>
-                  <p style={{marginTop:12,fontStyle:"italic",color:"#888"}}>The full tier sheet and methodology PDF for The Open will be published here once the field and tiers are set.</p>
-                </div>
-              )}
-            </div>
           </div>
         )}
       </div>
