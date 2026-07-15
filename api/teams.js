@@ -15,7 +15,7 @@ const TEAM_IDS = [1, 3, 5, 9];
 // Master switch for the initial pick/build window — must match PICKS_OPEN in
 // public/index.html. While false, build saves are rejected even inside the time
 // window. Setting a PIN via /api/claim is independent and stays available.
-const PICKS_OPEN = false;
+const PICKS_OPEN = true;
 const EDIT_WINDOWS = [
   { open: new Date("2026-01-01T00:00:00+01:00"), close: new Date("2026-07-16T06:35:00+01:00"), mode: "build" },
   // Post-R2 transfer window — close = R3 first tee (placeholder 08:00 BST Sat Jul 18).

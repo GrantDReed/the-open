@@ -42,7 +42,7 @@ const costBg = { 4: "#b91c1c", 3: "#1d4ed8", 2: "#15803d", 1: "#7e22ce" };
 // open — but setting a PIN via claim code stays available (see api/claim.js and
 // the picker's claim flow, which are independent of this switch). Must match
 // PICKS_OPEN in api/teams.js.
-const PICKS_OPEN = false;
+const PICKS_OPEN = true;
 const EDIT_WINDOWS = [
   { open: new Date("2026-01-01T00:00:00+01:00"), close: new Date("2026-07-16T06:35:00+01:00"), label: "Team picks", mode: "build" },
   // Post-R2 transfer window. Opening is gated on R2 actually being complete

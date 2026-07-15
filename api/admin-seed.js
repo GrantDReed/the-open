@@ -59,6 +59,38 @@ export default async function handler(req, res) {
     return res.status(200).json({ status: "transfers-written", results });
   }
 
+  // Seed rosters directly (admin override — normally set via the build window
+  // with a PIN). Body shape: rosters: { "<teamId>": [{ name, cost }, ...] } or
+  // null to clear. Writes roster:<teamId>. Enforces exactly 4 players and unique
+  // names within a team; cross-team uniqueness is the caller's responsibility.
+  const { rosters } = req.body || {};
+  if (rosters && typeof rosters === "object") {
+    const results = [];
+    for (const [teamId, roster] of Object.entries(rosters)) {
+      if (!TEAM_IDS.includes(Number(teamId))) {
+        results.push({ teamId, status: "skipped", reason: "unknown teamId" });
+        continue;
+      }
+      if (roster === null) {
+        await redis.del(`roster:${teamId}`);
+        results.push({ teamId, status: "cleared" });
+        continue;
+      }
+      if (!Array.isArray(roster) || roster.length !== 4 ||
+          !roster.every(p => p && typeof p.name === "string" && typeof p.cost === "number")) {
+        results.push({ teamId, status: "skipped", reason: "expected 4 {name,cost} entries" });
+        continue;
+      }
+      if (new Set(roster.map(p => p.name.toLowerCase().trim())).size !== 4) {
+        results.push({ teamId, status: "skipped", reason: "duplicate players within team" });
+        continue;
+      }
+      await redis.set(`roster:${teamId}`, JSON.stringify(roster));
+      results.push({ teamId, status: "set", players: roster.map(p => p.name) });
+    }
+    return res.status(200).json({ status: "rosters-written", results });
+  }
+
   // Wipe rosters (and optionally PINs)
   if (action === "wipe") {
     for (const id of TEAM_IDS) {
