@@ -293,7 +293,7 @@ function getTier(apiName) {
 // badge and are scored exactly like a missed cut (keep R1/R2, worst-round-of-day
 // penalty for R3/R4). Matching is last-name/first-initial tolerant via nameMatches.
 const WITHDRAWN = [
-  // (none yet — add a rostered player's name here and redeploy if they withdraw)
+  "James Nicholas", // WD after R1 (75); never posted R2 — Fri Jul 17
 ];
 function isWithdrawn(name) {
   return WITHDRAWN.some((w) => nameMatches(w, name));
@@ -428,7 +428,9 @@ function App() {
     return rounds;
   };
 
-  // Cut line: top 60 and ties
+  // Cut line: The Open takes the top 70 and ties after 36 holes (unlike the US
+  // Open's top 60 — this app was ported from that one, so keep this in sync).
+  const CUT_SPOTS = 70;
   const allPlayers = Object.values(players);
   // R2 is over when every player has r2 data AND no one is still mid-round in R2.
   // Withdrawn players never post a full R2, so exclude them — otherwise a single
@@ -449,7 +451,7 @@ function App() {
   // player has an R3 score, so `total` is a clean R1 + R2-so-far figure.
   const cutScoreOf = (p) => r2Done ? r1r2Score(p) : (p.total ?? null);
   const rankedForCut = allPlayers.filter(p => cutScoreOf(p) != null).sort((a, b) => cutScoreOf(a) - cutScoreOf(b));
-  const projectedCutScore = rankedForCut.length >= 60 ? cutScoreOf(rankedForCut[59]) : null;
+  const projectedCutScore = rankedForCut.length >= CUT_SPOTS ? cutScoreOf(rankedForCut[CUT_SPOTS - 1]) : null;
   const actualCutScore = r2Done ? projectedCutScore : null;
   // MC penalty only applies after R2 is complete
   const isMC = (name) => {
