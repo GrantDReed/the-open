@@ -439,10 +439,17 @@ function App() {
     const t = parseInt(p.thru);
     return isNaN(t) || t >= 18; // not mid-round
   });
-  // Cut is a 36-hole cut — always compute from R1+R2 only, never from live total
+  // The *actual* 36-hole cut (applied once R2 is complete, for MC penalties) is
+  // always computed from R1+R2 only, never from the live total.
   const r1r2Score = (p) => (p.r1 != null && p.r2 != null) ? p.r1 + p.r2 : null;
-  const playersWithR1R2 = allPlayers.filter(p => r1r2Score(p) != null).sort((a, b) => r1r2Score(a) - r1r2Score(b));
-  const projectedCutScore = playersWithR1R2.length >= 60 ? r1r2Score(playersWithR1R2[59]) : null;
+  // Cut-line projection basis. Once R2 is done, use the real 36-hole R1+R2 score.
+  // While R2 is still in progress, project each player at their current to-par
+  // total — so a player well over par who hasn't posted (or even started) R2 is
+  // shown projected to MISS, not silently assumed safe. Before the cut is made no
+  // player has an R3 score, so `total` is a clean R1 + R2-so-far figure.
+  const cutScoreOf = (p) => r2Done ? r1r2Score(p) : (p.total ?? null);
+  const rankedForCut = allPlayers.filter(p => cutScoreOf(p) != null).sort((a, b) => cutScoreOf(a) - cutScoreOf(b));
+  const projectedCutScore = rankedForCut.length >= 60 ? cutScoreOf(rankedForCut[59]) : null;
   const actualCutScore = r2Done ? projectedCutScore : null;
   // MC penalty only applies after R2 is complete
   const isMC = (name) => {
@@ -555,7 +562,7 @@ function App() {
     ...p,
     tier: getTier(p.name),
     owners: teamsOwning(p.name),
-    cut: projectedCutScore !== null && r1r2Score(p) != null && r1r2Score(p) > projectedCutScore,
+    cut: projectedCutScore !== null && cutScoreOf(p) != null && cutScoreOf(p) > projectedCutScore,
     wd: isWithdrawn(p.name),
   })).sort((a,b)=>{
     const ao=a.cut||a.wd, bo=b.cut||b.wd; // cut/withdrawn players sink to the bottom
@@ -574,8 +581,8 @@ function App() {
   const swapCandidates = [4,3,2,1].flatMap(tier =>
     PRICE_TIERS[tier].map(name => {
       const s = findScore(name) || {};
-      const r1r2 = (s.r1 != null && s.r2 != null) ? s.r1 + s.r2 : null;
-      const cut = projectedCutScore !== null && r1r2 != null && r1r2 > projectedCutScore;
+      const cutScore = cutScoreOf(s);
+      const cut = projectedCutScore !== null && cutScore != null && cutScore > projectedCutScore;
       return { name, cost: tier, total: s.total ?? null, thru: s.thru ?? null, cut, wd: isWithdrawn(name) };
     })
   ).sort((a,b)=>{
