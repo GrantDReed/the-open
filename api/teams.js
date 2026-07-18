@@ -10,16 +10,16 @@ const TEAM_IDS = [1, 3, 5, 9];
 // The Open 2026 — Royal Birkdale, July 16–19 (all times BST, UTC+1). Picks close
 // at the R1 first tee time. This time-based window is a coarse backstop; the
 // client additionally requires Round 2 to be actually complete before opening
-// transfers (weather-delay safe). R3 transfer-close is the R3 first tee time.
-// TODO: confirm exact R1 and R3 first-tee times with the official schedule.
+// transfers (weather-delay safe). R3 transfer-close is the R3 first tee time
+// (09:10 BST Sat Jul 18); R1 first tee (06:35 BST Thu Jul 16) closed picks.
 // Master switch for the initial pick/build window — must match PICKS_OPEN in
 // public/index.html. While false, build saves are rejected even inside the time
 // window. Setting a PIN via /api/claim is independent and stays available.
 const PICKS_OPEN = true;
 const EDIT_WINDOWS = [
   { open: new Date("2026-01-01T00:00:00+01:00"), close: new Date("2026-07-16T06:35:00+01:00"), mode: "build" },
-  // Post-R2 transfer window — close = R3 first tee (placeholder 08:00 BST Sat Jul 18).
-  { open: new Date("2026-07-17T18:00:00+01:00"), close: new Date("2026-07-18T08:00:00+01:00"), mode: "swap" },
+  // Post-R2 transfer window — close = R3 first tee (09:10 BST Sat Jul 18).
+  { open: new Date("2026-07-17T18:00:00+01:00"), close: new Date("2026-07-18T09:10:00+01:00"), mode: "swap" },
 ];
 function activeWindow() {
   const now = new Date();
